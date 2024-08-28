@@ -27,6 +27,8 @@ public class Board
     private CellData m_cellData;
     private NormalItem[,] m_intialFill;
     private bool m_isFish;
+    private BoardStatus m_boardStatus = new BoardStatus();
+
     public Board(Transform transform, GameSettings gameSettings)
     {
         m_root = transform;
@@ -112,7 +114,7 @@ public class Board
                 else{
                     newItem.SetView();
                 }
-               
+                // UpdateTypeCount(newItem.ItemType, 1);
                 newItem.SetViewRoot(m_root);
 
                 cell.Assign(newItem);
@@ -160,6 +162,7 @@ public class Board
                 else{
                     item.SetView();
                 }
+                // UpdateTypeCount(item.ItemType, 1);
                 itemCache.SetView(item.View);
                 itemCache.SetSprite(item.Sprite);
                 itemCache.SetViewRoot(m_root);
@@ -197,6 +200,81 @@ public class Board
         }
     }
 
+    private bool TryGetNormalItemFromCell(Cell cell, out NormalItem item){
+        item = null;
+        if(!cell.IsEmpty) {
+            item = cell.Item as NormalItem;
+            if(item != null){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private List<NormalItem.eNormalType> GetAllSurroundingCellNormalTypes(Cell cell){
+        var list = new List<NormalItem.eNormalType>();
+        var up = cell.NeighbourUp;
+        var bottom = cell.NeighbourBottom;
+        var right = cell.NeighbourRight;
+        var left = cell.NeighbourLeft;
+
+        if(up){
+            if(!up.IsEmpty){
+                bool canGet = TryGetNormalItemFromCell(up, out var item);
+                if(canGet){
+                    list.Add(item.ItemType);
+                }
+            }
+        }
+        if(bottom){
+            if(!bottom.IsEmpty){
+                bool canGet = TryGetNormalItemFromCell(bottom, out var item);
+                if(canGet){
+                    list.Add(item.ItemType);
+                }
+            }   
+        }
+        if(right){
+            if(!right.IsEmpty){
+                bool canGet = TryGetNormalItemFromCell(right, out var item);
+                if(canGet){
+                    list.Add(item.ItemType);
+                }
+            }
+        }
+        if(left){
+            if(!left.IsEmpty){
+                bool canGet = TryGetNormalItemFromCell(left, out var item);
+                if(canGet){
+                    list.Add(item.ItemType);
+                }
+            }
+        }
+        if(list.Count == 0){
+            List<NormalItem.eNormalType> types = new List<NormalItem.eNormalType>();
+                if (cell.NeighbourBottom != null)
+                {
+                    NormalItem nitem = cell.NeighbourBottom.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+
+                if (cell.NeighbourLeft != null)
+                {
+                    NormalItem nitem = cell.NeighbourLeft.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+            var type = Utils.GetRandomNormalTypeExcept(types.ToArray());
+            list.Add(type);
+        }
+        return list;
+    }
 
     internal void FillGapsWithNewItems()
     {
@@ -209,9 +287,17 @@ public class Board
 
                 NormalItem item = new NormalItem();
 
-                var type = Utils.GetRandomNormalType();
+                var type = m_boardStatus.GetDiffFromSurrounding(GetAllSurroundingCellNormalTypes(cell));
+
                 item.SetType(type);
-                item.SetView(m_cellData.dictionary[type]);
+
+                if(m_isFish)
+                    item.SetView(m_cellData.dictionary[type]);
+                else
+                    item.SetView();
+
+                // UpdateTypeCount(item.ItemType, 1);
+
                 item.SetViewRoot(m_root);
 
                 cell.Assign(item);
@@ -715,16 +801,23 @@ public class Board
                 Cell holder = m_cells[x, y - shifts];
 
                 Item item = cell.Item;
+                // UpdateTypeCount((cell.Item as NormalItem).ItemType, -1);
                 cell.Free();
 
                 holder.Assign(item);
+                // UpdateTypeCount((holder.Item as NormalItem).ItemType, 1);
                 item.View.DOMove(holder.transform.position, 0.3f);
             }
         }
     }
 
+    public void UpdateTypeCount(NormalItem.eNormalType type, int modAmt){
+        m_boardStatus.UpdateTypeCount(type, modAmt);
+    }
+
     public void Clear()
     {
+        m_boardStatus.Clear();
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)

@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\Utilities\Utils.cs" />
     <Compile Include="Assets\Scripts\Controllers\LevelMoves.cs" />
     <Compile Include="Assets\Scripts\UI\UIToggleSound.cs" />
+    <Compile Include="Assets\Scripts\SO\CellData.cs" />
     <Compile Include="Assets\Scripts\UI\UIPanelPause.cs" />
     <Compile Include="Assets\Scripts\Board\Cell.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Assets\Scripts\Controllers\LevelCondition.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
+    <Compile Include="Assets\Scripts\Board\BoardStatus.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
     <Compile Include="Assets\Scripts\Controllers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Controllers\LevelTime.cs" />
@@ -90,7 +92,6 @@
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
     <Compile Include="Assets\Scripts\UI\UIPanelGame.cs" />
     <Compile Include="Assets\Scripts\Board\Item.cs" />
-    <Compile Include="Assets\Scripts\SO\CellData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Demigiant\DOTween\DOTween.XML" />

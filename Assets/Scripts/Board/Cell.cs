@@ -35,13 +35,24 @@ public class Cell : MonoBehaviour
 
     public void Free()
     {
+        if((Item as NormalItem) != null)
+            BoardController.Instance.Board.UpdateTypeCount((Item as NormalItem).ItemType, -1);
         Item = null;
     }
 
     public void Assign(Item item)
     {
+        var bonusCast = (item as BonusItem);
+        if(bonusCast != null && Item != null){
+            Item.Clear();
+        }
+
         Item = item;
         Item.SetCell(this);
+
+        if((Item as NormalItem) != null){
+            BoardController.Instance.Board.UpdateTypeCount((Item as NormalItem).ItemType, +1);
+        }
     }
 
     public void ApplyItemPosition(bool withAppearAnimation)
@@ -56,6 +67,7 @@ public class Cell : MonoBehaviour
 
     internal void Clear()
     {
+        BoardController.Instance.Board.UpdateTypeCount((Item as NormalItem).ItemType, -1);
         if (Item != null)
         {
             Item.Clear();
@@ -71,7 +83,9 @@ public class Cell : MonoBehaviour
     internal void ExplodeItem()
     {
         if (Item == null) return;
-
+        if((Item as NormalItem) != null){
+            BoardController.Instance.Board.UpdateTypeCount((Item as NormalItem).ItemType, -1);
+        }
         Item.ExplodeView();
         Item = null;
     }

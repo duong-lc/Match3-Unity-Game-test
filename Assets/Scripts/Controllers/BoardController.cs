@@ -7,12 +7,13 @@ using UnityEngine;
 
 public class BoardController : MonoBehaviour
 {
+    public static BoardController Instance;
     public event Action OnMoveEvent = delegate { };
 
     public bool IsBusy { get; private set; }
 
     private Board m_board;
-
+    public Board Board{ get { return m_board;}}
     private GameManager m_gameManager;
 
     private bool m_isDragging;
@@ -31,8 +32,12 @@ public class BoardController : MonoBehaviour
 
     private bool m_gameOver;
 
+    private void Awake(){
+        Instance = this;
+    }
+
     public void StartGame(GameManager gameManager, GameSettings gameSettings)
-    {
+    {   
         m_gameManager = gameManager;
 
         m_gameSettings = gameSettings;
@@ -232,6 +237,7 @@ public class BoardController : MonoBehaviour
     {
         for (int i = 0; i < matches.Count; i++)
         {
+            // m_board.UpdateTypeCount((matches[i].Item as NormalItem).ItemType, -1);
             matches[i].ExplodeItem();
         }
 
