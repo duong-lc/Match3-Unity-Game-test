@@ -32,8 +32,11 @@ public class BoardController : MonoBehaviour
 
     private bool m_gameOver;
 
+    public PrefabObjectPool prefabPool;
+
     private void Awake(){
         Instance = this;
+        prefabPool = new GameObject("PrefabObjectPool").AddComponent<PrefabObjectPool>();
     }
 
     public void StartGame(GameManager gameManager, GameSettings gameSettings)
@@ -59,11 +62,6 @@ public class BoardController : MonoBehaviour
 
     private void Fill()
     {
-        // if(m_gameSettings.IsFish){
-        //     m_board.Fill(m_gameSettings.cellData);
-        // }else{
-        //     m_board.Fill();
-        // }
         m_board.Fill();
         FindMatchesAndCollapse();
     }

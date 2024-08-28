@@ -26,10 +26,12 @@ public class Item
 
         if (!string.IsNullOrEmpty(prefabname))
         {
-            GameObject prefab = Resources.Load<GameObject>(prefabname);
+            // GameObject prefab = Resources.Load<GameObject>(prefabname);
+            GameObject prefab = BoardController.Instance.prefabPool.GetObject(prefabname);
             if (prefab)
             {
-                View = GameObject.Instantiate(prefab).transform;
+                // View = GameObject.Instantiate(prefab).transform;
+                View = prefab.transform;
             }
         }
     }
@@ -40,11 +42,13 @@ public class Item
 
         if (!string.IsNullOrEmpty(prefabname))
         {
-            GameObject prefab = Resources.Load<GameObject>(prefabname);
+            // GameObject prefab = Resources.Load<GameObject>(prefabname);
+            GameObject prefab = BoardController.Instance.prefabPool.GetObject(prefabname);
             if (prefab)
             {
                 prefab.GetComponent<SpriteRenderer>().sprite = sprite;
-                View = GameObject.Instantiate(prefab).transform;
+                // View = GameObject.Instantiate(prefab).transform;
+                View = prefab.transform;
             }
         }
     }
@@ -118,7 +122,7 @@ public class Item
     {
         if (View == null) return;
 
-        Vector3 scale = View.localScale;
+        Vector3 scale = Vector3.one;
         View.localScale = Vector3.one * 0.1f;
         View.DOScale(scale, 0.1f);
     }
@@ -135,7 +139,9 @@ public class Item
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    View.localScale = Vector3.one;
+                    BoardController.Instance.prefabPool.ReturnObject(GetPrefabName(), View.gameObject);
+                    // GameObject.Destroy(View.gameObject);
                     View = null;
                 }
                 );
@@ -166,7 +172,8 @@ public class Item
 
         if (View)
         {
-            GameObject.Destroy(View.gameObject);
+            BoardController.Instance.prefabPool.ReturnObject(GetPrefabName(),View.gameObject);
+            // GameObject.Destroy(View.gameObject);
             View = null;
         }
     }

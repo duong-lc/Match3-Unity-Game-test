@@ -35,5 +35,6 @@
     public const string SPRITE_FISH_TYPE_FIVE = "Fish/fish_5";
 
     public const string SPRITE_FISH_TYPE_SIX = "Fish/fish_6";
+    
     public const string SPRITE_FISH_TYPE_SEVEN = "Fish/rainbow_fish";
 }
